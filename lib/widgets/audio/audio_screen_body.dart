@@ -394,12 +394,15 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
   void _playNextSurah() async {
     if (!mounted) return;
     final nextSurah = _currentSurah % 114 + 1;
+    await _audioPlayer.stop();
     await _loadSurahAudio(nextSurah);
   }
 
   void _playPreviousSurah() async {
-    if (!mounted || _currentSurah <= 1) return;
-    await _loadSurahAudio(_currentSurah - 1);
+    if (!mounted) return;
+    final previousSurah = _currentSurah == 1 ? 114 : _currentSurah - 1;
+    await _audioPlayer.stop();
+    await _loadSurahAudio(previousSurah);
   }
 
   void _togglePlay() async {
@@ -592,9 +595,9 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
               } else if (progressRatio >= 0.25 && progressRatio < 0.50) {
                 shimmerStart += 9.5;
               } else if (progressRatio >= 0.50 && progressRatio < 0.75) {
-                shimmerStart += 6.5;
+                shimmerStart += 7.5;
               } else {
-                shimmerStart += 5.0;
+                shimmerStart += 5.5;
               }
 
               return Align(

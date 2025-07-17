@@ -4,6 +4,7 @@ import 'package:quran_app/screens/juz_screen.dart';
 import 'package:quran_app/screens/splash_screen.dart';
 import 'package:quran_app/screens/surah_detail_screen.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
 
@@ -15,6 +16,7 @@ void main() async {
     androidNotificationOngoing: true,
   );
 
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 

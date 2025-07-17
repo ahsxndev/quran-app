@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      sha256: b30acd5944035672bc15c6b7a8b47d773e41e2f17de064350988c5d02adb1c68
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   convex_bottom_bar:
     dependency: "direct main"
     description:
@@ -161,6 +169,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
+  drift:
+    dependency: transitive
+    description:
+      name: drift
+      sha256: dce2723fb0dd03563af21f305f8f96514c27f870efba934b4fe84d4fedb4eff7
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.28.0"
+  drift_flutter:
+    dependency: transitive
+    description:
+      name: drift_flutter
+      sha256: "0cadbf3b8733409a6cf61d18ba2e94e149df81df7de26f48ae0695b48fd71922"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.4"
   fake_async:
     dependency: transitive
     description:
@@ -272,6 +296,38 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  geocoding:
+    dependency: "direct main"
+    description:
+      name: geocoding
+      sha256: "606be036287842d779d7ec4e2f6c9435fc29bbbd3c6da6589710f981d8852895"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
+  geocoding_android:
+    dependency: transitive
+    description:
+      name: geocoding_android
+      sha256: ba810da90d6633cbb82bbab630e5b4a3b7d23503263c00ae7f1ef0316dcae5b9
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
+  geocoding_ios:
+    dependency: transitive
+    description:
+      name: geocoding_ios
+      sha256: "18ab1c8369e2b0dcb3a8ccc907319334f35ee8cf4cfef4d9c8e23b13c65cb825"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  geocoding_platform_interface:
+    dependency: transitive
+    description:
+      name: geocoding_platform_interface
+      sha256: "8c2c8226e5c276594c2e18bfe88b19110ed770aeb7c1ab50ede570be8b92229b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   hijri:
     dependency: "direct main"
     description:
@@ -384,6 +440,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  location:
+    dependency: "direct main"
+    description:
+      name: location
+      sha256: b080053c181c7d152c43dd576eec6436c40e25f326933051c330da563ddd5333
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.0.1"
+  location_platform_interface:
+    dependency: transitive
+    description:
+      name: location_platform_interface
+      sha256: ca8700bb3f6b1e8b2afbd86bd78b2280d116c613ca7bfa1d4d7b64eba357d749
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.1"
+  location_web:
+    dependency: transitive
+    description:
+      name: location_web
+      sha256: b8e3add5efe0d65c5e692b7a135d80a4015c580d3ea646fa71973e97668dd868
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.1"
   matcher:
     dependency: transitive
     description:
@@ -408,6 +488,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  muslim_data_flutter:
+    dependency: "direct main"
+    description:
+      name: muslim_data_flutter
+      sha256: d11ef6be87b1287164e93dc64cf09f179a94498eebb5fa3827823e7231565a08
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   nm:
     dependency: transitive
     description:
@@ -496,6 +584,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  prayers_times:
+    dependency: "direct main"
+    description:
+      name: prayers_times
+      sha256: dddb63fa5bd10c1c626cb8b0aadf4fd0687b884f26a990fc62065702ac0ca898
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   quran:
     dependency: "direct main"
     description:
@@ -637,6 +733,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
+  sqlite3:
+    dependency: transitive
+    description:
+      name: sqlite3
+      sha256: c0503c69b44d5714e6abbf4c1f51a3c3cc42b75ce785f44404765e4635481d38
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.7.6"
+  sqlite3_flutter_libs:
+    dependency: transitive
+    description:
+      name: sqlite3_flutter_libs
+      sha256: e07232b998755fe795655c56d1f5426e0190c9c435e1752d39e7b1cd33699c71
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.34"
   stack_trace:
     dependency: transitive
     description:
@@ -685,6 +797,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.4"
+  timezone:
+    dependency: "direct main"
+    description:
+      name: timezone
+      sha256: "2236ec079a174ce07434e89fcd3fcda430025eb7692244139a9cf54fdcf1fc7d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.4"
   typed_data:
     dependency: transitive
     description:
