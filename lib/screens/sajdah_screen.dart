@@ -1,3 +1,34 @@
+/// ---------------------------------------------------------------------------
+/// 🧎 SajdahScreen - List of Quranic Verses Requiring Prostration (Sajdah)
+///
+/// 🧠 Purpose:
+///   Displays all verses (Ayat) that include a Sajdah prostration sign.
+///   Provides translations and toggles between English, Urdu, or both.
+///
+/// 📍 Features:
+///   - Lists all Sajdah Ayat with Surah name, number, place of revelation
+///   - Arabic text shown with `Uthmanic` font
+///   - Supports dynamic translation switching via `TranslationMenuButton`
+///   - Translations available:
+///       - English (Saheeh)
+///       - Urdu (Noto Nastaliq)
+///       - Both
+///   - Maintains selected translation state per tile
+///
+/// 📦 Dependencies:
+///   - `quran` package (verse data, translation, sajdah check)
+///   - Custom `TranslationMenuButton` for dropdown selection
+///   - `Constants.kPurple`, `Constants.kMagenta` for consistent theming
+///
+/// 🧱 Structure:
+///   - `initState`: Precomputes all Sajdah verses from Quran
+///   - `ListView.builder`: Renders all tiles with translation switch support
+///   - `_buildSajdahTile`: Displays metadata, Arabic verse, translations
+///
+/// 🧑 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:quran_app/widgets/translation_menu_button.dart';

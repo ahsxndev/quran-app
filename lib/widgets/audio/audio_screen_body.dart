@@ -1,10 +1,90 @@
+/// ---------------------------------------------------------------------------
+/// 📖 Quran Audio Player - Stateful Widget Logic (AudioScreenState)
+///
+/// 🧠 Overview:
+///   This widget manages playback of Quran Surahs using the `just_audio`
+///   and `quran` packages, with full support for:
+///     ✅ Online streaming with retry & timeout logic
+///     ✅ Offline downloads with Dio and path_provider
+///     ✅ Looping (off, repeat one, auto-next)
+///     ✅ Playback speed control
+///     ✅ Shimmer buffering effects
+///     ✅ Download state management with shared_preferences
+///     ✅ Connectivity checks with connectivity_plus
+///
+/// 📦 Key Components:
+///   - `_audioPlayer`          → JustAudio player instance
+///   - `_downloadProgress`     → Track Dio download state
+///   - `_audioUrl`             → Local or remote source URL
+///   - `_quranLoopMode`        → Enum to control loop behavior
+///   - `_currentSurah`         → Surah currently loaded for playback
+///   - `_hasConnection`        → Tracks live internet connection
+///   - `_error`                → Displays user-facing error messages
+///
+/// 🛠 Features:
+///   - ✅ **Dynamic audio source handling**: Loads from local or online
+///   - ✅ **Persistent download info**: Uses shared_preferences
+///   - ✅ **Retry logic**: Up to 4 attempts on audio load failure
+///   - ✅ **Connectivity-aware**: Auto-handles playback based on network
+///   - ✅ **Playback speed control**: Modal bottom sheet selector
+///   - ✅ **Shimmer progress bar**: When buffering
+///   - ✅ **Offline-friendly**: Fully functional without network if downloaded
+///
+/// 🎧 Audio Modes:
+///   - `QuranLoopMode.off`: No loop
+///   - `QuranLoopMode.repeatOne`: Loop same Surah
+///   - `QuranLoopMode.autoNext`: Auto-play next Surah
+///
+/// 🎯 Extensible:
+///   You can plug in additional features like:
+///   - Bookmarks per verse
+///   - Progress sync with cloud
+///   - Custom audio download queues
+///
+/// 🔌 Dependencies:
+///   - `just_audio`, `just_audio_background`
+///   - `quran`, `dio`, `shared_preferences`
+///   - `connectivity_plus`, `path_provider`, `shimmer`
+///
+/// 📝 Related Widgets:
+///   - `AudioControls`
+///   - `AudioNextSurahs`
+///   - `AudioDownloader`
+///   - `AudioShimmer`
+///
+/// 🔁 Retry Logic:
+/// ```dart
+/// while (!loaded && retryCount < maxRetries && mounted) {
+///   try {
+///     await _audioPlayer.setAudioSource(...);
+///     loaded = true;
+///   } catch (e) {
+///     retryCount++;
+///     await Future.delayed(Duration(seconds: 2 * (1 << retryCount)));
+///   }
+/// }
+/// ```
+///
+/// 📋 Example Usage:
+/// ```dart
+/// Navigator.push(
+///   context,
+///   MaterialPageRoute(
+///     builder: (_) => const AudioScreen(surahNumber: 36),
+///   ),
+/// );
+/// ```
+///
+/// ---------------------------------------------------------------------------
+
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:quran_app/constants/constants.dart';
 import 'package:quran_app/widgets/audio/audio_shimmer.dart';
@@ -18,7 +98,6 @@ enum QuranLoopMode { off, repeatOne, autoNext }
 
 int _currentSurah = 0;
 QuranLoopMode _quranLoopMode = QuranLoopMode.off;
-
 
 class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin {
   late AudioPlayer _audioPlayer;
@@ -110,111 +189,6 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
     // Then proceed with normal load
     _loadSurahAudio(_currentSurah);
   }
-  
-  Future<void> _handleDownload() async {
-    if (_isDownloaded) {
-      await _confirmDelete();
-      return;
-    }
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Download Surah'),
-        content: const Text('Download this surah for offline listening?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Download'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      await _downloadCurrentSurah();
-    }
-  }
-
-  Future<void> _downloadCurrentSurah() async {
-    if (_audioUrl == null || _isDownloading) return;
-
-    setState(() {
-      _isDownloading = true;
-      _downloadProgress = 0;
-      _totalSize = 0;
-    });
-
-    await AudioDownloader.downloadSurah(
-      surahNumber: _currentSurah,
-      url: _audioUrl!,
-      onProgress: (received, total) {
-        if (mounted) {
-          setState(() {
-            _downloadProgress = received;
-            _totalSize = total;
-          });
-        }
-      },
-      onComplete: (path) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Download completed!')),
-          );
-          setState(() {
-            _isDownloading = false;
-            _isDownloaded = true;
-          });
-        }
-      },
-      onError: (error) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Download failed: $error')),
-          );
-          setState(() {
-            _isDownloading = false;
-          });
-        }
-      },
-    );
-  }
-
-  Future<void> _confirmDelete() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Download'),
-        content: const Text('Delete this downloaded surah?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      await AudioDownloader.deleteDownload(_currentSurah);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Download deleted')),
-        );
-        setState(() {
-          _isDownloaded = false;
-        });
-      }
-    }
-  }
 
   Future<void> _loadSurahAudio(int surah) async {
     if (!mounted) return;
@@ -238,6 +212,8 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
                 id: 'surah_$surah',
                 album: 'Al Quran',
                 title: quran.getSurahName(surah),
+                artist: 'Quran Recitation',
+                artUri: Uri.parse('https://example.com/album_art.jpg'), // Replace with actual URL or local asset
               ),
             ),
           );
@@ -317,6 +293,8 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
               id: 'surah_$surah',
               album: 'Al Quran',
               title: quran.getSurahName(surah),
+              artist: 'Quran Recitation',
+              artUri: Uri.parse('https://example.com/album_art.jpg'), // Replace with actual URL or local asset
             ),
           ),
         );
@@ -358,9 +336,11 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
           AudioSource.uri(
             Uri.parse(url),
             tag: MediaItem(
-              id: 'surah_$surah',
+              id: 'surah_$_currentSurah',
               album: 'Al Quran',
-              title: quran.getSurahName(surah),
+              title: quran.getSurahName(_currentSurah),
+              artist: 'Quran Recitation',
+              artUri: Uri.parse('https://example.com/album_art.jpg'), // Replace with actual URL or local asset
             ),
           ),
           preload: true,
@@ -369,10 +349,10 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
         });
         loaded = true;
       } catch (e) {
-        debugPrint("Retry $retryCount failed for Surah $surah: $e");
+        debugPrint("Retry $retryCount failed for Surah $_currentSurah: $e");
         retryCount++;
         if (retryCount >= maxRetries) {
-          throw Exception("Failed after $maxRetries retries for Surah $surah");
+          throw Exception("Failed after $maxRetries retries for Surah $_currentSurah");
         }
         await Future.delayed(Duration(seconds: 2 * (1 << retryCount)));
       }
@@ -432,6 +412,142 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
     }
   }
 
+  Future<void> _handleDownload() async {
+    if (_isDownloaded) {
+      await _confirmDelete();
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Download Surah',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Constants.kPurple),
+        ),
+        content: const Text(
+          'Do you want to download this Surah for offline playback?',
+          style: TextStyle(fontSize: 15),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            style: TextButton.styleFrom(foregroundColor: Colors.grey[700]),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Constants.kPurple,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Download'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _downloadCurrentSurah();
+    }
+  }
+
+  Future<void> _downloadCurrentSurah() async {
+    if (_audioUrl == null || _isDownloading) return;
+
+    setState(() {
+      _isDownloading = true;
+      _downloadProgress = 0;
+      _totalSize = 0;
+    });
+
+    await AudioDownloader.downloadSurah(
+      surahNumber: _currentSurah,
+      url: _audioUrl!,
+      onProgress: (received, total) {
+        if (mounted) {
+          setState(() {
+            _downloadProgress = received;
+            _totalSize = total;
+          });
+        }
+      },
+      onComplete: (path) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Download completed!')),
+          );
+          setState(() {
+            _isDownloading = false;
+            _isDownloaded = true;
+          });
+        }
+      },
+      onError: (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Download failed: $error')),
+          );
+          setState(() {
+            _isDownloading = false;
+          });
+        }
+      },
+    );
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Delete Download',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Constants.kPurple),
+        ),
+        content: const Text(
+          'Are you sure you want to delete the downloaded Surah?',
+          style: TextStyle(fontSize: 15),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            style: TextButton.styleFrom(foregroundColor: Colors.grey[700]),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await AudioDownloader.deleteDownload(_currentSurah);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Download deleted')),
+        );
+        setState(() {
+          _isDownloaded = false;
+        });
+      }
+    }
+  }
+
+
   @override
   void dispose() {
     _playerStateSubscription?.cancel();
@@ -441,7 +557,6 @@ class AudioScreenState extends State<AudioScreen> with TickerProviderStateMixin 
     _shimmerController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final surahName = quran.getSurahName(_currentSurah);

@@ -1,3 +1,38 @@
+/// ---------------------------------------------------------------------------
+/// 🌐 TranslationMenuButton - Dropdown Menu for Selecting Quran Translation
+///
+/// 🧠 Purpose:
+///   - Provides a language selector (None, English, Urdu, Both) using
+///     a styled `PopupMenuButton`.
+///
+/// 💡 Features:
+///   - Highlights the selected option in purple
+///   - Rounded corners and subtle background for visual consistency
+///   - Customizable via `onSelected` callback
+///
+/// 🔧 Parameters:
+///   - `selectedOption`  → The currently selected translation option
+///   - `onSelected`      → Callback when a new option is selected
+///
+/// 🎨 Styling:
+///   - Uses `Constants.kPurple` for selected state
+///   - Light semi-transparent background
+///
+/// 📎 Example:
+///   ```dart
+///   TranslationMenuButton(
+///     selectedOption: TranslationOption.english,
+///     onSelected: (opt) => setState(() => selectedOption = opt),
+///   )
+///   ```
+///
+/// 📁 Typically used in:
+///   - `SurahDetailScreen` AppBar actions
+///
+/// 🧑 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 

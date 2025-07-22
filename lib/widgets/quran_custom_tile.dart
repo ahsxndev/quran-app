@@ -1,3 +1,49 @@
+/// ---------------------------------------------------------------------------
+/// 📖 QuranCustomTile - A reusable widget to display Surah/Para information
+///
+/// 🧠 Purpose:
+///   - Visually represents a Surah or Para tile in a list
+///   - Displays number, English title, subtitle, Arabic name, and optionally:
+///     → Download status
+///     → Audio play/pause icon
+///
+/// 🎨 Design:
+///   - Star icon for numbering
+///   - Title & subtitle on the left
+///   - Arabic name on the right
+///   - Responsive spacing, shadows, and custom fonts
+///
+/// 🔧 Parameters:
+///   - `number`               → Index of Surah/Para
+///   - `title`                → English title (e.g., Al-Fatiha)
+///   - `subtitle`             → Translation or meaning (e.g., The Opening)
+///   - `arabicName`           → Arabic name of the Surah/Para
+///   - `onTap`                → Callback when tile is tapped
+///   - `showIcon`             → Show play/pause icon
+///   - `isPlaying`            → Whether currently playing
+///   - `showSubtitle`         → Whether to display subtitle
+///   - `isSurahTile`          → If true, enables download icon check
+///   - `isDownloaded`         → Optional override for download status
+///   - `showDownloadedIcon`  → Whether to show download status icon
+///
+/// 📎 Example:
+///   ```dart
+///   QuranCustomTile(
+///     number: 1,
+///     title: 'Al-Fatiha',
+///     subtitle: 'The Opening',
+///     arabicName: 'الفاتحة',
+///     onTap: () {},
+///     showIcon: true,
+///     isPlaying: false,
+///     showDownloadedIcon: true,
+///   )
+///   ```
+///
+/// 🧑 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'package:flutter/material.dart';
 import 'package:quran_app/constants/constants.dart';
 

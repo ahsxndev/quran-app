@@ -1,7 +1,25 @@
+/// ---------------------------------------------------------------------------
+/// 📖 JuzScreen
+///
+/// 🧠 Purpose:
+///   Displays all verses (ayat) within a selected Juz (Para) of the Quran
+///   including Surah names, Ayah numbers, and translations (English/Urdu).
+///
+/// 📦 Dependencies:
+///   - quran (for ayah data)
+///   - TranslationMenuButton (custom widget)
+///
+/// 🔁 Features:
+///   - Translation toggle menu
+///   - Dynamic rendering of Surahs and Bismillah
+///   - Header with Juz overview (start, end, total ayat)
+///
+/// 👤 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:quran_app/constants/constants.dart';
-
 import '../widgets/translation_menu_button.dart';
 
 class JuzScreen extends StatefulWidget {
@@ -15,11 +33,13 @@ class JuzScreen extends StatefulWidget {
 
 class _JuzScreenState extends State<JuzScreen> {
   final int juzNumber = Constants.juzIndex;
-  TranslationOption selectedOption = TranslationOption.english;
 
+  /// 🌍 Current selected translation type (English, Urdu, Both)
+  TranslationOption selectedOption = TranslationOption.english;
 
   @override
   Widget build(BuildContext context) {
+    // 🧠 Get all Surah-Ayah combinations in the selected Juz
     final Map<int, List<int>> surahRanges = quran.getSurahAndVersesFromJuz(juzNumber);
     final List<Map<String, int>> ayahList = [];
 
@@ -35,7 +55,7 @@ class _JuzScreenState extends State<JuzScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xffF2F2F2),
-      appBar:  AppBar(
+      appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -47,6 +67,7 @@ class _JuzScreenState extends State<JuzScreen> {
           ),
         ),
         actions: [
+          // 🌐 Language menu for selecting translation
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: TranslationMenuButton(
@@ -58,24 +79,39 @@ class _JuzScreenState extends State<JuzScreen> {
       ),
       body: CustomScrollView(
         slivers: [
+          // 🪪 Header showing Juz info
           SliverToBoxAdapter(
             child: _buildHeader(startSurah, endSurah, totalAyat),
           ),
+          // 📜 Full list of ayat in this Juz
           SliverList(
             delegate: SliverChildBuilderDelegate(
                   (context, index) {
                 final current = ayahList[index];
                 final surahNum = current['surah']!;
                 final ayahNum = current['ayah']!;
+
                 final arabic = quran.getVerse(surahNum, ayahNum, verseEndSymbol: true);
                 final surahNameArabic = quran.getSurahNameArabic(surahNum);
                 final surahNameEng = quran.getSurahName(surahNum);
+                final isNewSurah = ayahNum == 1;
 
-                final bool isNewSurah = ayahNum == 1;
+                final english = quran.getVerseTranslation(
+                  surahNum,
+                  ayahNum,
+                  translation: quran.Translation.enSaheeh,
+                  verseEndSymbol: false,
+                );
+                final urdu = quran.getVerseTranslation(
+                  surahNum,
+                  ayahNum,
+                  translation: quran.Translation.urdu,
+                  verseEndSymbol: false,
+                );
 
                 final List<Widget> widgets = [];
 
-                // Add Surah Name if it's a new surah
+                // 🆕 Add Surah Title if this is the first Ayah
                 if (isNewSurah) {
                   widgets.add(
                     Padding(
@@ -93,7 +129,7 @@ class _JuzScreenState extends State<JuzScreen> {
                     ),
                   );
 
-                  // Add Bismillah (except Surah 1 and 9)
+                  // 💠 Add Bismillah (except Surah 1 & 9)
                   if (surahNum != 1 && surahNum != 9) {
                     widgets.add(
                       const Padding(
@@ -113,12 +149,15 @@ class _JuzScreenState extends State<JuzScreen> {
                   }
                 }
 
-                final english = quran.getVerseTranslation(surahNum, ayahNum,
-                    translation: quran.Translation.enSaheeh, verseEndSymbol: false);
-                final urdu = quran.getVerseTranslation(surahNum, ayahNum,
-                    translation: quran.Translation.urdu, verseEndSymbol: false);
-
-                widgets.add(_buildAyahCard(ayahNum, arabic, english, urdu, surahNameEng, ayahNum, index));
+                widgets.add(_buildAyahCard(
+                  ayahNum,
+                  arabic,
+                  english,
+                  urdu,
+                  surahNameEng,
+                  ayahNum,
+                  index,
+                ));
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,19 +167,19 @@ class _JuzScreenState extends State<JuzScreen> {
               childCount: ayahList.length,
             ),
           ),
-
         ],
       ),
-
     );
   }
 
+  /// 🪪 Builds the header of the Juz page with background and stats
   Widget _buildHeader(String startSurah, String endSurah, int totalAyat) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double headerHeight = statusBarHeight + 200;
 
     return Stack(
       children: [
+        // 📷 Background image
         Container(
           height: headerHeight,
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -152,6 +191,8 @@ class _JuzScreenState extends State<JuzScreen> {
             ),
           ),
         ),
+
+        // 🖤 Overlay
         Container(
           height: headerHeight,
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -160,6 +201,8 @@ class _JuzScreenState extends State<JuzScreen> {
             color: const Color(0x4D000000),
           ),
         ),
+
+        // 🧾 Text content
         SizedBox(
           height: headerHeight,
           width: double.infinity,
@@ -186,11 +229,7 @@ class _JuzScreenState extends State<JuzScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: 100,
-                    height: 2,
-                    color: Colors.white54,
-                  ),
+                  Container(width: 100, height: 2, color: Colors.white54),
                   const SizedBox(height: 10),
                   Text(
                     '$totalAyat Ayat in total',
@@ -209,6 +248,7 @@ class _JuzScreenState extends State<JuzScreen> {
     );
   }
 
+  /// 📖 Renders a single Ayah block with Arabic + Translations
   Widget _buildAyahCard(
       int ayahNum,
       String arabic,
@@ -221,16 +261,16 @@ class _JuzScreenState extends State<JuzScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.transparent,
-        border: const Border(
+        border: Border(
           bottom: BorderSide(color: Constants.kPurple, width: 1),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Surah and ayah info
+          // 🔹 Surah Name + Ayah number + serial bubble
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -256,9 +296,10 @@ class _JuzScreenState extends State<JuzScreen> {
               ),
             ],
           ),
+
           const SizedBox(height: 12),
 
-          // Arabic Ayah
+          // 🕋 Arabic text
           Directionality(
             textDirection: TextDirection.rtl,
             child: Text(
@@ -275,7 +316,7 @@ class _JuzScreenState extends State<JuzScreen> {
 
           const SizedBox(height: 10),
 
-          // English Translation (if selected)
+          // 🌐 English Translation (if selected)
           if (selectedOption == TranslationOption.english || selectedOption == TranslationOption.both)
             Align(
               alignment: Alignment.centerLeft,
@@ -292,7 +333,7 @@ class _JuzScreenState extends State<JuzScreen> {
 
           const SizedBox(height: 6),
 
-          // Urdu Translation (if selected)
+          // 🌙 Urdu Translation (if selected)
           if (selectedOption == TranslationOption.urdu || selectedOption == TranslationOption.both)
             Align(
               alignment: Alignment.centerRight,
@@ -314,5 +355,4 @@ class _JuzScreenState extends State<JuzScreen> {
       ),
     );
   }
-
 }

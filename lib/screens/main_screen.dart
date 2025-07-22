@@ -1,3 +1,22 @@
+/// ---------------------------------------------------------------------------
+/// 🧭 MainScreen
+///
+/// 🧠 Purpose:
+///   Acts as the root layout with a Convex Bottom Navigation Bar
+///   to switch between key screens: Home, Quran, Audio, and Prayer.
+///
+/// 📦 Dependencies:
+///   - convex_bottom_bar: Stylish, animated bottom navigation bar
+///
+/// 🧱 Contains:
+///   - HomeScreen
+///   - QuranScreen
+///   - AudioListScreen
+///   - PrayerScreen
+///
+/// 👤 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/constants/constants.dart';
@@ -14,8 +33,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  /// 🚩 Currently selected index of the bottom nav
   int selectedIndex = 0;
 
+  /// 📋 List of screens navigated by bottom bar
   final List<Widget> _screens = const [
     HomeScreen(),
     QuranScreen(),
@@ -26,9 +47,17 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 🧱 Active screen displayed based on nav index
       body: _screens[selectedIndex],
+
+      // 🔻 Bottom Navigation Bar using ConvexAppBar
       bottomNavigationBar: ConvexAppBar(
         style: TabStyle.react,
+        backgroundColor: Constants.kPrimary,
+        activeColor: Colors.white,
+        color: const Color(0xB3FFFFFF),
+        initialActiveIndex: selectedIndex,
+
         items: [
           TabItem(
             icon: _buildNavIcon('assets/images/home.png'),
@@ -47,10 +76,8 @@ class _MainScreenState extends State<MainScreen> {
             title: 'Prayer',
           ),
         ],
-        backgroundColor: Constants.kPrimary,
-        activeColor: Colors.white,
-        color: Color(0xB3FFFFFF),
-        initialActiveIndex: selectedIndex,
+
+        // 🟢 On tap, update selected index
         onTap: (int index) {
           setState(() {
             selectedIndex = index;
@@ -60,6 +87,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  /// 🖼️ Builds custom icon from asset with unified size and color
   Widget _buildNavIcon(String assetPath) {
     return SizedBox(
       height: 28,

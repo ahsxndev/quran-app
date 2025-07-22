@@ -1,3 +1,42 @@
+/// ---------------------------------------------------------------------------
+/// 🎵 AudioControls - Quran Audio Playback UI Controller
+///
+/// 🧠 Purpose:
+///   - Provides playback control buttons for Quran audio: play, pause,
+///     next, previous, loop, download, and speed control.
+///
+/// 🔧 Constructor Parameters:
+///   - `player`             → JustAudio `AudioPlayer` instance to stream state
+///   - `onNext`             → Callback for skipping to the next track
+///   - `onPrev`             → Callback for going to the previous track
+///   - `onPlayPause`        → Toggles play/pause
+///   - `onSpeedTap`         → Opens a speed selection menu
+///   - `onLoopToggle`       → Toggles repeat/loop mode
+///   - `onDownload`         → Initiates or manages audio download
+///   - `loopIcon`           → Icon to show current loop state (e.g. `Icons.repeat_one`)
+///   - `isDownloading`      → True if download is in progress
+///   - `isDownloaded`       → True if audio has already been downloaded
+///   - `downloadProgress`   → Current download progress in bytes
+///   - `totalSize`          → Total audio size in bytes
+///   - `speed`              → Current playback speed (e.g. 1.0, 1.25, 1.5)
+///
+/// 💡 Features:
+///   - Displays CircularProgressIndicator when downloading
+///   - Download icon toggles between `download` and `download_done`
+///   - Speed button shows current speed with fine granularity
+///   - StreamBuilder listens to `player.playerStateStream` to reflect
+///     real-time play/pause icon updates
+///
+/// 📎 Typically used in:
+///   - Quran audio player footer or bottom sheet
+///
+/// 📁 Related Files:
+///   - `audio/audio_downloader.dart` for managing download states
+///
+/// 🧑 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../constants/constants.dart';

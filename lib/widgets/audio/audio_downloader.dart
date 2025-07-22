@@ -1,3 +1,51 @@
+/// ---------------------------------------------------------------------------
+/// 🔊 AudioDownloader - Utility for Quran Audio File Management
+///
+/// 🧠 Purpose:
+///   - Handles download, existence check, and deletion of Surah audio files
+///     using the `dio` package and `SharedPreferences` for tracking.
+///
+/// 📦 Responsibilities:
+///   ✅ Download Surah audio files and save them locally
+///   ✅ Track downloaded surah numbers in persistent storage
+///   ✅ Check if a Surah has already been downloaded
+///   ✅ Delete downloaded files and update tracking
+///
+/// 📁 Usage Example:
+/// ```dart
+/// AudioDownloader.downloadSurah(
+///   surahNumber: 1,
+///   url: "https://example.com/audio/surah_1.mp3",
+///   onProgress: (received, total) => print("$received / $total"),
+///   onComplete: (path) => print("Downloaded at $path"),
+///   onError: (err) => print("Error: $err"),
+/// );
+/// ```
+///
+/// 🔧 Methods:
+///   - `getDownloadPath(int surahNumber)`
+///        → Returns file path for saving surah audio
+///   - `isDownloaded(int surahNumber)`
+///        → Checks local storage + SharedPreferences for download state
+///   - `downloadSurah(...)`
+///        → Downloads and stores surah audio with callbacks for progress,
+///          completion, and error handling
+///   - `deleteDownload(int surahNumber)`
+///        → Deletes the file and updates shared preferences
+///
+/// 🗂 Preferences Key:
+///   - `_prefsKey = 'downloaded_surahs'`
+///        → Stores list of downloaded surah numbers as strings
+///
+/// 📦 Dependencies:
+///   - dio (HTTP download)
+///   - path_provider (file directory)
+///   - shared_preferences (persistent state)
+///
+/// 🧑 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';

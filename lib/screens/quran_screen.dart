@@ -1,3 +1,36 @@
+/// ---------------------------------------------------------------------------
+/// 📖 QuranScreen - Main Interface for Quran Reading
+///
+/// 🧠 Purpose:
+///   Displays a beautifully designed tab-based Quran UI with sections for:
+///     - Surahs (Chapters)
+///     - Paras/Juz (Parts)
+///     - Sajdah (Prostration verses)
+///
+/// 📍 Features:
+///   - Stylish header with Quran image, Basmala, and welcome text
+///   - Custom `QuranCustomTile` for Surah & Juz lists
+///   - Access to `SurahDetailScreen`, `JuzScreen`, and `SajdahScreen`
+///   - Uses `quran` package for surah names, ayah counts, revelations, etc.
+///   - `Constants.paraNames` used for Juz/Para display names
+///   - Automatically calculates Ayat count per Juz
+///
+/// 📦 Dependencies:
+///   - flutter/material
+///   - quran (package)
+///   - quran_app/constants/constants.dart
+///   - quran_app/screens/* (Sajdah, Juz, Surah detail)
+///   - quran_app/widgets/quran_custom_tile.dart
+///
+/// 🧱 Structure:
+///   - TabController with 3 tabs: Surah, Para(Juz), Sajda
+///   - Header: Quran image, Basmala text, motivational tagline
+///   - Tab content dynamically builds tiles using Quran package data
+///
+/// 👤 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:quran_app/constants/constants.dart';

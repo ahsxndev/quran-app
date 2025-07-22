@@ -1,8 +1,39 @@
+/// ---------------------------------------------------------------------------
+/// 🕌 PrayerScreen - Accurate Daily Salah Times
+///
+/// 🧠 Purpose:
+///   Displays Islamic prayer timings dynamically using GPS or user-selected
+///   cities. Also shows sunrise and midnight times with dynamic city search
+///   (online/offline), shimmer loading, and current/next prayer info.
+///
+/// 📍 Features:
+///   - Detects user’s location via GPS or manual city search
+///   - Fetches prayer timings using `prayers_times` package
+///   - Displays current and next prayer with time updates
+///   - Offline and online city search (OpenStreetMap API)
+///   - Custom time zone assignment for accurate salah times
+///   - Shimmer loading placeholders while data loads
+///   - Timezone and high-latitude rule handling
+///
+/// 📦 Dependencies:
+///   - location, geocoding, shared_preferences
+///   - connectivity_plus, http, shimmer
+///   - prayers_times, timezone
+///
+/// 🧱 Structure:
+///   - Header: Time, date, city, current & next prayer
+///   - Search bar: Manual city selection with overlay suggestions
+///   - Sun Info: Sunrise and Midnight widgets
+///   - Prayer list: Custom tile UI for each prayer time
+///
+/// 👤 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as gps;
 import 'package:geocoding/geocoding.dart' as geo;
@@ -27,17 +58,60 @@ class _PrayerScreenState extends State<PrayerScreen> {
   final _searchFocus = FocusNode();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
-  Timer? _clockTimer;
   bool _loadingLocation = false;
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+  Timer? _clockTimer;
+
+
 
   /* ---------- Data ---------- */
   tz.Location? _currentLocation;
   final _offlineCities = const [
+    'Makkah, Saudi Arabia',
+    'Medinah, Saudi Arabia',
     'Lahore, Pakistan',
-    'Okara, Pakistan',
+    'Karachi, Pakistan',
+    'Islamabad, Pakistan',
     'London, UK',
     'New York, USA',
     'Istanbul, Turkey',
+    'Dubai, UAE',
+    'Kuwait City, Kuwait',
+    'Doha, Qatar',
+    'Muscat, Oman',
+    'Manama, Bahrain',
+    'Riyadh, Saudi Arabia',
+    'Abu Dhabi, UAE',
+    'Jakarta, Indonesia',
+    'Kuala Lumpur, Malaysia',
+    'Cairo, Egypt',
+    'Cape Town, South Africa',
+    'Nairobi, Kenya',
+    'Lagos, Nigeria',
+    'Khartoum, Sudan',
+    'Beirut, Lebanon',
+    'Amman, Jordan',
+    'Tehran, Iran',
+    'Baghdad, Iraq',
+    'Damascus, Syria',
+    'Bishkek, Kyrgyzstan',
+    'Tashkent, Uzbekistan',
+    'Astana, Kazakhstan',
+    'Baku, Azerbaijan',
+    'Tbilisi, Georgia',
+    'Yerevan, Armenia',
+    'Dushanbe, Tajikistan',
+    'Ashgabat, Turkmenistan',
+    'Male, Maldives',
+    'Dhaka, Bangladesh',
+    'New Delhi, India',
+    'Mumbai, India',
+    'Kolkata, India',
+    'Hyderabad, India',
+    'Chennai, India',
+    'Bangalore, India',
+    'Ahmedabad, India',
+    'Pune, India',
   ];
 
   String _cityName = 'Unknown';
@@ -87,6 +161,16 @@ class _PrayerScreenState extends State<PrayerScreen> {
       _setDateTime(now);
     });
   }
+
+  void _showSnackbar(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.redAccent : Colors.green,
+      ),
+    );
+  }
+
 
   void _setDateTime(tz.TZDateTime localNow) {
     if (!mounted) return;
@@ -148,11 +232,21 @@ class _PrayerScreenState extends State<PrayerScreen> {
   /* ---------- Search list ---------- */
   Widget _buildSuggestionList() {
     final q = _searchController.text.trim();
+
     return FutureBuilder<List<String>>(
       future: q.length < 2
           ? Future.value([])
-          : _hasInternet().then((hasNet) =>
-      hasNet ? _fetchOnline(q) : throw 'no-internet'),
+          : _hasInternet().then((hasNet) {
+        if (hasNet) {
+          return _fetchOnline(q);
+        } else {
+          // Show snackbar for no internet
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showSnackbar('No internet connection', isError: true);
+          });
+          throw 'no-internet';
+        }
+      }),
       builder: (ctx, snap) {
         final children = <Widget>[
           ListTile(
@@ -173,9 +267,11 @@ class _PrayerScreenState extends State<PrayerScreen> {
             children.add(
               const Padding(
                 padding: EdgeInsets.all(12),
-                child: Text('No internet connection',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.redAccent)),
+                child: Text(
+                  'No internet connection',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.redAccent),
+                ),
               ),
             );
           }
@@ -183,9 +279,11 @@ class _PrayerScreenState extends State<PrayerScreen> {
           children.add(
             const Padding(
               padding: EdgeInsets.all(12),
-              child: Text('No suggestions found',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey)),
+              child: Text(
+                'No suggestions found',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
+              ),
             ),
           );
         } else if (snap.hasData) {
@@ -278,10 +376,14 @@ class _PrayerScreenState extends State<PrayerScreen> {
       await prefs.setString('city', city);
 
       await _fetchPrayerTimes(lat, lng, city);
+
+      _showSnackbar('Location set to $city');
     } catch (e) {
       debugPrint('City select error: $e');
+      _showSnackbar('Failed to find location', isError: true);
     }
   }
+
 
   Future<void> _fetchFromGps() async {
     if (!mounted) return;
@@ -309,13 +411,17 @@ class _PrayerScreenState extends State<PrayerScreen> {
       await prefs.setString('city', city);
 
       await _fetchPrayerTimes(loc.latitude!, loc.longitude!, city);
+
+      _showSnackbar('Location set to $city');
     } catch (e) {
       debugPrint('GPS error: $e');
       await _fetchPrayerTimes(31.5497, 74.3436, 'Lahore, Pakistan');
+      _showSnackbar('Failed to get location, using Lahore as fallback', isError: true);
     } finally {
       if (mounted) setState(() => _loadingLocation = false);
     }
   }
+
 
   String? _mapToValidPrayerName(String prayerId) {
     final lower = prayerId.toLowerCase();
@@ -459,38 +565,52 @@ class _PrayerScreenState extends State<PrayerScreen> {
   /* ---------- Build ---------- */
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: () {
-        _searchFocus.unfocus();
-        _removeOverlay();
-      },
-      child: SafeArea(
-        child: Scaffold(
+    return SafeArea(
+      child: Scaffold(
           resizeToAvoidBottomInset: false,
-          body: Stack(
-            children: [
-              Image.asset(
-                'assets/images/prayer_bg.png',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
-              Column(
-                children: [
-                  const SizedBox(height: kToolbarHeight + 24),
-                  _buildHeader(),
-                  const SizedBox(height: 16),
-                  _buildSearchBar(theme),
-                  const SizedBox(height: 8),
-                  _buildSunRow(),
-                  const SizedBox(height: 16),
-                  _buildPrayerList(theme),
-                ],
-              ),
-            ],
-          ),
-        ),
+          body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              if (_searchFocus.hasFocus) {
+                _searchFocus.unfocus();
+                _removeOverlay();
+              }
+            },
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/prayer_bg.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Column(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).padding.top + 8),
+                    _buildHeader(),
+                    const SizedBox(height: 16),
+                    _buildSearchBar(Theme.of(context)),
+                    const SizedBox(height: 8),
+                    _buildSunRow(),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(28)),
+                        ),
+                        child: _prayerTimes.isEmpty
+                            ? _shimmerList()
+                            : _buildPrayerList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
       ),
     );
   }
@@ -526,6 +646,8 @@ class _PrayerScreenState extends State<PrayerScreen> {
           _cityName,
           style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
+        if (_loadingLocation)
+          const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
         const SizedBox(height: 8),
         if (_currentPrayer.isNotEmpty)
           Column(
@@ -605,25 +727,14 @@ class _PrayerScreenState extends State<PrayerScreen> {
     );
   }
 
-  Widget _buildPrayerList(ThemeData theme) {
+  Widget _buildPrayerList() {
     final prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.only(top: 8),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        child: _prayerTimes.isEmpty
-            ? _shimmerList()
-            : ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          itemCount: prayers.length,
-          itemBuilder: (_, i) => PrayerCustomTile(
-            prayerName: prayers[i],
-            prayerTiming: _prayerTimes[prayers[i]] ?? '--',
-          ),
-        ),
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      itemCount: prayers.length,
+      itemBuilder: (_, i) => PrayerCustomTile(
+        prayerName: prayers[i],
+        prayerTiming: _prayerTimes[prayers[i]] ?? '--',
       ),
     );
   }

@@ -1,4 +1,50 @@
-// widgets/audio/audio_shimmer.dart
+/// ---------------------------------------------------------------------------
+/// 🎶 AudioShimmer Widget
+///
+/// 📘 Purpose:
+///   Provides a shimmering placeholder UI while audio data is being loaded
+///   in the Quran Audio Player (`AudioScreen`). It enhances user experience
+///   by displaying a visual loading state for:
+///     - Surah cover image
+///     - Surah title
+///     - Verse count
+///     - Audio progress bar
+///     - Playback control buttons
+///     - Next surah list
+///
+/// 🛠 Implementation:
+///   - Uses the `shimmer` package to animate placeholders
+///   - Placeholder layout closely mimics the actual player UI
+///   - Dynamically adapts to screen width with responsive design
+///
+/// 📦 Dependencies:
+///   - `shimmer: ^3.0.0` (or latest compatible)
+///
+/// 🔍 Usage:
+/// ```dart
+/// isLoading
+///   ? const AudioShimmer()
+///   : ActualAudioPlayerUI(),
+/// ```
+///
+/// 🧩 Components:
+///   - Image placeholder: 260px height container with rounded corners
+///   - Title/verse count: Rectangular shimmer boxes
+///   - Progress bar: Wide horizontal shimmer
+///   - Controls: 5 circular shimmer buttons (larger center button)
+///   - Next Surahs: 3 horizontal shimmer tiles
+///
+/// 🌈 Shimmer Colors:
+///   - Base: `Colors.grey.shade300`
+///   - Highlight: `Colors.white`
+///
+/// 🔁 Improvements (Optional):
+///   - Accept optional layout configuration via constructor
+///   - Animate shimmer direction or speed based on app theme
+///
+/// ---------------------------------------------------------------------------
+
+
 
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';

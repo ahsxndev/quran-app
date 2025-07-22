@@ -1,7 +1,49 @@
+/// ---------------------------------------------------------------------------
+/// 📖 SurahDetailScreen - View for a Specific Surah in the Quran
+///
+/// 🧠 Purpose:
+///   - Displays detailed verses (Ayahs) of a selected Surah
+///   - Shows Arabic text with optional English and Urdu translations
+///   - Allows translation toggle via a reusable dropdown menu
+///
+/// 🚀 Key Features:
+///   ✅ Displays Surah metadata (name, translation, place, Ayah count)
+///   ✅ Highlights Basmala based on Surah index rules
+///   ✅ Animated, custom-styled header with background image
+///   ✅ Translation selection using `TranslationMenuButton`
+///   ✅ Dynamically rendered Ayahs with direction and language-aware layout
+///
+/// 🧱 Structure:
+///   - Stateful widget with:
+///     - `TranslationOption` state
+///     - `_buildHeader()` for top info and style
+///     - `_buildAyahCard()` to render each verse with translations
+///
+/// 📦 Dependencies:
+///   - `quran` package for verse data
+///   - `Constants` for colors and design
+///   - `translation_menu_button.dart` (custom widget)
+///
+/// 📌 Navigation:
+///   - Navigated via named route using:
+///       Navigator.pushNamed(context, SurahDetailScreen.id, arguments: { 'surahNumber': x });
+///
+/// 🖼 Assets Required:
+///   - `assets/images/Bg.png`
+///   - `assets/images/bismillah.png`
+///
+/// 📎 Example Usage:
+///   ```dart
+///   Navigator.pushNamed(context, SurahDetailScreen.id, arguments: { 'surahNumber': 36 });
+///   ```
+///
+/// 🧑 Author: Ahsan Zaman
+/// ---------------------------------------------------------------------------
+
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 import '../constants/constants.dart';
-import '../widgets/translation_menu_button.dart'; // <-- Import widget
+import '../widgets/translation_menu_button.dart';
 
 class SurahDetailScreen extends StatefulWidget {
   final int surahNumber;

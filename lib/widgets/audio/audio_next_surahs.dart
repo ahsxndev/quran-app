@@ -1,3 +1,45 @@
+/// ---------------------------------------------------------------------------
+/// 🎧 AudioNextSurahs - Displays Next 3 Surahs for Audio Playback
+///
+/// 🧠 Purpose:
+///   - This stateless widget displays a list of the next 3 Surahs in sequence,
+///     starting from the `currentSurah` (wrapping back to 1 after 114).
+///
+/// 📦 Use Case:
+///   ✅ To visually and interactively show next playable Surahs
+///   ✅ Used inside audio player screens to enhance user engagement
+///
+/// 📁 Parameters:
+///   - `currentSurah` → The currently playing Surah number (1 to 114)
+///   - `onSelect(int)` → Callback function triggered when a Surah is tapped
+///
+/// 📋 UI Details:
+///   - Uses `quran.getSurahName()` for the Arabic Surah name
+///   - Uses `quran.getVerseCount()` for number of verses
+///   - Each item includes:
+///     - 🎵 Music icon
+///     - Surah name & verse count
+///     - ▶️ Play icon
+///
+/// 🌀 Surah Wrap Logic:
+///   `(currentSurah + index) % 114 + 1`
+///   Ensures the surah number wraps to 1 if it exceeds 114.
+///
+/// 📦 Dependencies:
+///   - `quran` package (for names and verse counts)
+///   - Flutter Material UI
+///
+/// 📦 Example Usage:
+/// ```dart
+/// AudioNextSurahs(
+///   currentSurah: 5,
+///   onSelect: (surah) => playSurahAudio(surah),
+/// );
+/// ```
+///
+/// ---------------------------------------------------------------------------
+
+
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 
