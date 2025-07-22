@@ -1,6 +1,7 @@
 # 📖 The Holy Qur'an — Flutter App
 
-A beautifully designed **Al-Quran** mobile app built using Flutter. It offers complete Quranic Surahs and Juz navigation, smooth audio playback (streaming & offline), intelligent connectivity handling, Tasbeeh counter, and a stunning Asma ul Husna screen — all packed in an elegant and modern UI.
+A beautifully designed **Al-Quran** mobile app built using Flutter. It offers complete Quranic Surahs and Juz navigation, smooth audio playback (streaming & offline), smart connectivity handling, Tasbeeh counter, and a beautiful Asma ul Husna screen — all packed in a modern UI.  
+I’ve made the app as offline-friendly as possible — you can download Surah audio for offline listening.
 
 > ✨ More features will be added in future updates. Contributions are welcome — fork the repo and help make it even better!
 
@@ -59,6 +60,7 @@ To run this project locally:
    ```bash
    flutter run
    ```
+> 🗑️ **Note**: The `media_assets` folder inside the `assets` folder is for GitHub preview images only. You can delete it after cloning.
 
 > ⚠️ Run on a real device to test download, storage, and background audio features.
 
@@ -66,11 +68,22 @@ To run this project locally:
 
 ## 📸 Screenshots
 
-| Home Screen | Surah Player  | Tasbeeh Counter | Asma ul Husna |
-| ----------- | ------------- | --------------- | ------------- |
-| *(Add GIF)* | *(Add Image)* | *(Add Image)*   | *(Add Image)* |
+### 📱 Main Features  
+<div align="center"> 
+  <img src="assets/media_assets/splash.gif" width="180" alt="Splash Screen" /> 
+  <img src="assets/media_assets/onBoarding.gif" width="180" alt="Onboarding" /> 
+  <img src="assets/media_assets/home.jpg" width="180" alt="Home Screen" /> 
+  <img src="assets/media_assets/quran.gif" width="180" alt="Quran Screen" /> 
+</div>
 
-> Add more screenshots to showcase theme variations, shimmer loading, and offline behavior.
+### 🔊 Audio & Islamic Tools  
+<div align="center"> 
+  <img src="assets/media_assets/audio.gif" width="180" alt="Audio Player" /> 
+  <img src="assets/media_assets/names.gif" width="180" alt="Asma ul Husna" /> 
+  <img src="assets/media_assets/tasbih.gif" width="180" alt="Tasbeeh Counter" /> 
+  <img src="assets/media_assets/prayer.gif" width="180" alt="Prayer Time" /> 
+</div>
+
 
 ---
 
