@@ -18,13 +18,14 @@ A beautifully designed **Al-Quran** mobile app built using Flutter. It offers co
 ## 📥 Download Now
 
 > 📱 *Coming Soon to Play Store*
+
 > 🚧 Currently available via source code installation below.
 
 ---
 
-## 🎥 Promo Video
+## 🎥 Demo Video
 
-> 📺 *Coming soon...*
+👉 [Click here to watch the demo video](https://github.com/ahsxndev/notes_app/raw/main/assets/media_assets/demo.mp4)
 
 ---
 
