@@ -25,7 +25,7 @@ A beautifully designed **Al-Quran** mobile app built using Flutter. It offers co
 
 ## 🎥 Demo Video
 
-👉 [Click here to watch the demo video](https://github.com/ahsxndev/notes_app/raw/main/assets/media_assets/demo.mp4)
+👉 [Click here to watch the demo video](https://raw.githubusercontent.com/ahsxndev/quran-app/refs/heads/main/assets/media_assets/demo.mp4)
 
 ---
 
