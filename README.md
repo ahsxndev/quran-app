@@ -95,7 +95,7 @@ To run this project locally:
   * Online/Offline Support
   * Background Play
   * Seek, Repeat, Auto-next, Speed
-* 📥 Surah Downloads
+* 📥 Surah Audio Downloads
 * 🌐 Internet-aware Playback Retry
 * 🔄 Shimmer Placeholders (Loading UI)
 * 🧮 Digital Tasbeeh Counter with Vibration
