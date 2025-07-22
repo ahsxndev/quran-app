@@ -1,6 +1,3 @@
-## 🧷 `CONTRIBUTING.md`
-
-````md
 # 🙌 Contributing to The Holy Qur'an — Flutter App
 
 Thank you for showing interest in contributing! Your help is highly appreciated.
@@ -11,7 +8,6 @@ Thank you for showing interest in contributing! Your help is highly appreciated.
 2. **Clone** your fork locally  
    ```bash
    git clone https://github.com/your-username/quran-app.git
-````
 
 3. Create a new **feature or bugfix branch**
 
@@ -53,7 +49,3 @@ Thank you for showing interest in contributing! Your help is highly appreciated.
 ## 🙏 Thank you!
 
 Whether you’re fixing a bug, adding a feature, or improving documentation — your work is valued ❤️
-
-````
-
----
