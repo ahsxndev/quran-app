@@ -38,6 +38,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:quran_app/constants/constants.dart';
+import 'package:quran_app/screens/custom_licenses_screen.dart';
 import 'package:quran_app/screens/juz_screen.dart';
 import 'package:quran_app/screens/names_screen.dart';
 import 'package:quran_app/screens/splash_screen.dart';
@@ -95,6 +96,7 @@ class MyApp extends StatelessWidget {
         },
         '/tasbeeh': (_) => const TasbeehScreen(),
         '/names': (_) => const NamesScreen(),
+        '/license': (_) => const LicensesScreen(),
       },
     );
   }

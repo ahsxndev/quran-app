@@ -29,8 +29,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:quran_app/constants/constants.dart';
 
-import 'custom_licenses_screen.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -39,15 +37,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  void setData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("alreadyUsed", true);
-  }
+  late quran.RandomVerse _randomVerse;
+  String? _hijriDate;
 
   @override
   void initState() {
     super.initState();
-    setData();
+    _randomVerse = quran.RandomVerse();
+    _setData();
+    _loadHijriDate();
+  }
+
+  Future<void> _setData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("alreadyUsed", true);
+  }
+
+  Future<void> _loadHijriDate() async {
+    final date = await Constants.getAccurateHijriDateArabic();
+    setState(() {
+      _hijriDate = date;
+    });
   }
 
   void _showDeveloperInfoDialog() {
@@ -58,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: Dialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            backgroundColor: Color(0xF2FFFFFF),
+            backgroundColor: const Color(0xF2FFFFFF),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               child: SingleChildScrollView(
@@ -85,84 +95,68 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 14, color: Colors.black54),
                     ),
                     const SizedBox(height: 20),
-
-                    // Follow & Support Buttons
-                    Column(
+                    const Text(
+                      'Follow Developer on',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Constants.kPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.center,
                       children: [
-                        const Text(
-                          'Follow Developer on',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Constants.kPrimary,
-                          ),
+                        _buildDialogButton(
+                          icon: Icons.link,
+                          label: "LinkedIn",
+                          color: Colors.blue.shade700,
+                          url: 'https://www.linkedin.com/in/ahxanzaman',
                         ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            _buildDialogButton(
-                              icon: Icons.link,
-                              label: "LinkedIn",
-                              color: Colors.blue.shade700,
-                              url: 'https://www.linkedin.com/in/ahxanzaman',
-                            ),
-                            _buildDialogButton(
-                              icon: Icons.code,
-                              label: "GitHub",
-                              color: Colors.black87,
-                              url: 'https://github.com/ahsxndev',
-                            ),
-                            _buildDialogButton(
-                              icon: Icons.alternate_email,
-                              label: "Twitter / X",
-                              color: Colors.blue,
-                              url: 'https://x.com/ahsxn_dev',
-                            ),
-                          ],
+                        _buildDialogButton(
+                          icon: Icons.code,
+                          label: "GitHub",
+                          color: Colors.black87,
+                          url: 'https://github.com/ahsxndev',
                         ),
-                        const SizedBox(height: 20),
-
-                        const Text(
-                          'Support the Developer',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Constants.kPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            _buildDialogButton(
-                              icon: Icons.volunteer_activism,
-                              label: "Patreon",
-                              color: Color(0xFFf96854),
-                              url: 'https://www.patreon.com/c/ahsxn',
-                            ),
-                          ],
+                        _buildDialogButton(
+                          icon: Icons.alternate_email,
+                          label: "Twitter / X",
+                          color: Colors.blue,
+                          url: 'https://x.com/ahsxn_dev',
                         ),
                       ],
                     ),
-
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Support the Developer',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Constants.kPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        _buildDialogButton(
+                          icon: Icons.volunteer_activism,
+                          label: "Patreon",
+                          color: Color(0xFFf96854),
+                          url: 'https://www.patreon.com/c/ahsxn',
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 16),
                     TextButton.icon(
-                      icon: const Icon(Icons.article_outlined, color: Constants.kPurple,),
-                      label: const Text("View Licenses", style: TextStyle(
-                          color: Constants.kPurple
-                      ),),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const LicensesScreen()),
-                        );
-                      },
+                      icon: const Icon(Icons.article_outlined, color: Constants.kPurple),
+                      label: const Text("View Licenses", style: TextStyle(color: Constants.kPurple)),
+                      onPressed: () => Navigator.pushNamed(context, '/license'),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
@@ -256,22 +250,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 2),
                         Text(Constants.getMonthYear(), style: Constants.gregorianMonthYearStyle),
                         const SizedBox(height: 16),
-                        FutureBuilder<String>(
-                          future: Constants.getAccurateHijriDateArabic(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.white,
-                                child: Container(
-                                  height: 20,
-                                  width: 150,
-                                  color: Colors.grey[300],
-                                ),
-                              );
-                            }
-                            return Text(snapshot.data ?? '', style: Constants.hijriDateStyle);
-                          },
+                        _hijriDate != null
+                            ? Text(_hijriDate!, style: Constants.hijriDateStyle)
+                            : Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.white,
+                          child: Container(height: 20, width: 150, color: Colors.grey[300]),
                         ),
                       ],
                     ),
@@ -286,72 +270,64 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsetsDirectional.only(top: 10, bottom: 20),
                 child: Column(
                   children: [
-                    Builder(
-                      builder: (context) {
-                        quran.RandomVerse randomVerse = quran.RandomVerse();
-                        final verseNum = randomVerse.verseNumber;
-                        final surahNum = randomVerse.surahNumber;
-                        final arabic = randomVerse.verse;
-                        final surahName = quran.getSurahName(surahNum);
-                        final translation = randomVerse.translation;
-
-                        return Container(
-                          margin: const EdgeInsets.all(16),
-                          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                            boxShadow: const [BoxShadow(blurRadius: 3, spreadRadius: 1, offset: Offset(0, 1))],
+                    // 📖 Quran Ayah Box
+                    Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: const [BoxShadow(blurRadius: 3, spreadRadius: 1, offset: Offset(0, 1))],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Qur’an Ayah of the Day',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Constants.kMagenta)),
+                          const SizedBox(height: 12),
+                          Divider(thickness: 1, color: Constants.kPurple),
+                          const SizedBox(height: 12),
+                          Text(
+                            _randomVerse.verse,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontFamily: 'Uthmanic',
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text('Qur’an Ayah of the Day',
-                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Constants.kMagenta)),
-                              const SizedBox(height: 12),
-                              Divider(thickness: 1, color: Constants.kPurple),
-                              const SizedBox(height: 12),
-                              Text(
-                                arabic,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontFamily: 'Uthmanic',
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                translation,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(height: 20),
-                              RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  children: [
-                                    const TextSpan(
-                                      text: 'Surah: ',
-                                      style: TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w600),
-                                    ),
-                                    TextSpan(
-                                      text: '$surahName ',
-                                      style: const TextStyle(fontSize: 14, color: Constants.kMagenta, fontWeight: FontWeight.bold),
-                                    ),
-                                    TextSpan(
-                                      text: '(Ayah $verseNum)',
-                                      style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          const SizedBox(height: 16),
+                          Text(
+                            _randomVerse.translation,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w500),
                           ),
-                        );
-                      },
+                          const SizedBox(height: 20),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Surah: ',
+                                  style: TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w600),
+                                ),
+                                TextSpan(
+                                  text: '${quran.getSurahName(_randomVerse.surahNumber)} ',
+                                  style: const TextStyle(fontSize: 14, color: Constants.kMagenta, fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: '(Ayah ${_randomVerse.verseNumber})',
+                                  style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+
+                    // 🔹 Quick Actions
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Row(
@@ -371,6 +347,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
+
+                    // 🔹 About the Developer
                     Padding(
                       padding: const EdgeInsets.only(top: 40, bottom: 20),
                       child: GestureDetector(
