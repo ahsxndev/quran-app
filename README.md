@@ -4,6 +4,9 @@ A beautifully designed **Al-Quran** mobile app built using Flutter. It offers co
 I’ve made the app as offline-friendly as possible — you can download Surah audio for offline listening.
 
 > ✨ More features will be added in future updates. Contributions are welcome — fork the repo and help make it even better!
+> 
+<img width="3780" height="1890" alt="_Orange and Yellow Professional Gradient Pet Fitness App Banner Landscape" src="https://github.com/user-attachments/assets/3a6e4167-9a07-4820-aea1-b52aae149983" />
+
 
 <div align="center">
 
