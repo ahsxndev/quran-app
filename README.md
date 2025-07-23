@@ -26,7 +26,7 @@ I’ve made the app as offline-friendly as possible — you can download Surah a
 
 ## 🎥 Demo Video
 
-[![Watch Demo](https://img.shields.io/badge/Watch-Demo-blue?style=for-the-badge&logo=Vimeo&logoColor=white)](https://vimeo.com/1103451235)
+[![Watch Demo](https://img.shields.io/badge/Watch-Demo-blue?style=for-the-badge&logo=Vimeo&logoColor=white)](https://vimeo.com/1103877665?share=copy)
 
 ---
 
